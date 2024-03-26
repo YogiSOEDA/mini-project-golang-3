@@ -303,6 +303,43 @@ func PrintPdfBuku() {
 	pdf.SetRightMargin(10)
 
 	switch pilihanMenu {
+	case 1:
+		var kodeBuku uint
+
+		fmt.Print("Masukkan Kode Buku : ")
+		_, err := fmt.Scanln(&kodeBuku)
+		if err != nil {
+			fmt.Println("Terjadi Error : ", err)
+			return
+		}
+
+		listBuku.ID = kodeBuku
+
+		buku, err := listBuku.GetByID(config.Mysql.DB)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		bukuText := fmt.Sprintf(
+			"Buku :\nKode Buku : %d\nISBN : %s\nPenulis Buku : %s\nTahun Terbit : %d\nJudul Buku : %s\nGambar Buku : %s\nStok Buku : %d\n",
+			buku.ID,
+			buku.ISBN,
+			buku.Penulis,
+			buku.Tahun,
+			buku.Judul,
+			buku.Gambar,
+			buku.Stok,
+		)
+
+		pdf.MultiCell(0, 10, bukuText, "0", "L", false)
+
+		err = pdf.OutputFileAndClose(
+			fmt.Sprintf("pdf/book-%d.pdf", kodeBuku),
+		)
+		if err != nil {
+			fmt.Println(err)
+		}
+
 	case 2:
 		res, err := listBuku.GetAll(config.Mysql.DB)
 		if err != nil {
@@ -312,7 +349,6 @@ func PrintPdfBuku() {
 		for i, buku := range res {
 			bukuText := fmt.Sprintf(
 				"Buku #%d:\nKode Buku : %d\nISBN : %s\nPenulis Buku : %s\nTahun Terbit : %d\nJudul Buku : %s\nGambar Buku : %s\nStok Buku : %d\n",
-				// "Buku #%d:\nKode Buku : %s\nJudul Buku : %s\nPengarang : %s\nPenerbit : %s\nJumlah Halaman : %d\nTahunTerbit : %d\n",
 				i+1,
 				buku.ID,
 				buku.ISBN,

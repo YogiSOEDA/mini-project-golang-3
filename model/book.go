@@ -7,16 +7,16 @@ import (
 )
 
 type Book struct {
-	ID        uint      `json:"id" gorm:"primaryKey"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        uint           `json:"id" gorm:"primaryKey"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
-	ISBN      string    `json:"isbn"`
-	Penulis   string    `json:"penulis"`
-	Tahun     uint      `json:"tahun"`
-	Judul     string    `json:"judul"`
-	Gambar    string    `json:"gambar"`
-	Stok      uint      `json:"stok"`
+	ISBN      string         `json:"isbn"`
+	Penulis   string         `json:"penulis"`
+	Tahun     uint           `json:"tahun"`
+	Judul     string         `json:"judul"`
+	Gambar    string         `json:"gambar"`
+	Stok      uint           `json:"stok"`
 }
 
 func (bk *Book) Create(db *gorm.DB) error {
@@ -31,6 +31,21 @@ func (bk *Book) Create(db *gorm.DB) error {
 	return nil
 }
 
+func (bk *Book) GetByID(db *gorm.DB) (Book, error) {
+	res := Book{}
+
+	err := db.
+		Model(Book{}).
+		Where("id = ?", bk.ID).
+		Take(&res).
+		Error
+	if err != nil {
+		return Book{}, err
+	}
+
+	return res, nil
+}
+
 func (bk *Book) GetAll(db *gorm.DB) ([]Book, error) {
 	res := []Book{}
 
@@ -38,7 +53,7 @@ func (bk *Book) GetAll(db *gorm.DB) ([]Book, error) {
 		Model(Book{}).
 		Find(&res).
 		Error
-		
+
 	if err != nil {
 		return []Book{}, err
 	}
