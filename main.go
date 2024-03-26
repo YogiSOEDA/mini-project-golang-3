@@ -31,7 +31,8 @@ func main() {
 	fmt.Println("3. Hapus Buku")
 	fmt.Println("4. Edit Buku")
 	fmt.Println("5. Print Buku")
-	fmt.Println("6. Keluar")
+	fmt.Println("6. Import File CSV")
+	fmt.Println("7. Keluar")
 	fmt.Println("===========================================")
 
 	fmt.Print("Masukkan Pilihan : ")
@@ -52,6 +53,8 @@ func main() {
 	case 5:
 		controllers.PrintPdfBuku()
 	case 6:
+		controllers.ImportData()
+	case 7:
 		os.Exit(0)
 	}
 	main()

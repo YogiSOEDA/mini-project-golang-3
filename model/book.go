@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type Book struct {
@@ -90,6 +91,21 @@ func (bk *Book) DeleteByID(db *gorm.DB) error {
 		Delete(&bk).
 		Error
 
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (bk *Book) SaveImport(db *gorm.DB) error {
+	err := db.
+		Model(Book{}).
+		Clauses(clause.OnConflict{
+			Columns:   []clause.Column{{Name: "id"}},
+			DoUpdates: clause.AssignmentColumns([]string{"isbn", "penulis", "tahun", "judul","gambar", "stok"}),
+		}).Create(&bk).
+		Error
 	if err != nil {
 		return err
 	}
