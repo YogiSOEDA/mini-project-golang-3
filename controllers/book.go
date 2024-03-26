@@ -181,3 +181,91 @@ func HapusBuku() {
 
 	fmt.Println("Buku Berhasil Dihapus!")
 }
+
+func EditBuku() {
+	inputanUser := bufio.NewReader(os.Stdin)
+
+	var (
+		kodeBuku    uint
+		isbn        string
+		tahunTerbit uint
+		gambarBuku  string
+		stokBuku    uint
+	)
+
+	fmt.Println("===========================================")
+	fmt.Println("Edit Buku")
+	fmt.Println("===========================================")
+	LihatBuku()
+	fmt.Println("===========================================")
+
+	fmt.Print("Masukkan Kode Buku : ")
+	_, err := fmt.Scanln(&kodeBuku)
+	if err != nil {
+		fmt.Println("Terjadi Error : ", err)
+		return
+	}
+
+	fmt.Print("Silahkan Masukkan ISBN : ")
+	_, err = fmt.Scanln(&isbn)
+	if err != nil {
+		fmt.Println("Terjadi Error : ", err)
+		return
+	}
+
+	fmt.Print("Silahkan Masukkan Penulis Buku : ")
+	penulisBuku, err := inputanUser.ReadString('\r')
+	if err != nil {
+		fmt.Println("Terjadi Error : ", err)
+		return
+	}
+	penulisBuku = strings.Replace(penulisBuku, "\n", "", 1)
+	penulisBuku = strings.Replace(penulisBuku, "\r", "", 1)
+
+	fmt.Print("Silahkan Masukkan Tahun Terbit Buku : ")
+	_, err = fmt.Scanln(&tahunTerbit)
+	if err != nil {
+		fmt.Println("Terjadi Error : ", err)
+		return
+	}
+
+	fmt.Print("Silahkan Masukkan Judul Buku : ")
+	judulBuku, err := inputanUser.ReadString('\r')
+	if err != nil {
+		fmt.Println("Terjadi Error : ", err)
+		return
+	}
+	judulBuku = strings.Replace(judulBuku, "\n", "", 1)
+	judulBuku = strings.Replace(judulBuku, "\r", "", 1)
+
+	fmt.Print("Silahkan Masukkan Gambar Buku : ")
+	_, err = fmt.Scanln(&gambarBuku)
+	if err != nil {
+		fmt.Println("Terjadi Error : ", err)
+		return
+	}
+
+	fmt.Print("Silahkan Masukkan Stok Buku : ")
+	_, err = fmt.Scanln(&stokBuku)
+	if err != nil {
+		fmt.Println("Terjadi Error : ", err)
+		return
+	}
+
+	buku := model.Book{
+		ID:      kodeBuku,
+		ISBN:    isbn,
+		Penulis: penulisBuku,
+		Tahun:   tahunTerbit,
+		Judul:   judulBuku,
+		Gambar:  gambarBuku,
+		Stok:    stokBuku,
+	}
+
+	err = buku.UpdatedOneByID(config.Mysql.DB)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("Data Buku Berhasil Diubah!")
+}
