@@ -8,9 +8,7 @@ import (
 	"sekolahbeta/miniproject3/model"
 	"strings"
 	"sync"
-
 )
-
 
 func TambahBuku() {
 
@@ -18,10 +16,10 @@ func TambahBuku() {
 	draftBuku := []model.Book{}
 
 	var (
-		isbn string
+		isbn        string
 		tahunTerbit uint
-		gambarBuku string
-		stokBuku uint
+		gambarBuku  string
+		stokBuku    uint
 	)
 
 	fmt.Println("===========================================")
@@ -51,7 +49,7 @@ func TambahBuku() {
 			fmt.Println("Terjadi Error : ", err)
 			return
 		}
-		
+
 		fmt.Print("Silahkan Masukkan Judul Buku : ")
 		judulBuku, err := inputanUser.ReadString('\r')
 		if err != nil {
@@ -60,7 +58,7 @@ func TambahBuku() {
 		}
 		judulBuku = strings.Replace(judulBuku, "\n", "", 1)
 		judulBuku = strings.Replace(judulBuku, "\r", "", 1)
-		
+
 		fmt.Print("Silahkan Masukkan Gambar Buku : ")
 		_, err = fmt.Scanln(&gambarBuku)
 		if err != nil {
@@ -74,14 +72,14 @@ func TambahBuku() {
 			fmt.Println("Terjadi Error : ", err)
 			return
 		}
-		
+
 		draftBuku = append(draftBuku, model.Book{
-			ISBN: isbn,
+			ISBN:    isbn,
 			Penulis: penulisBuku,
-			Tahun: tahunTerbit,
-			Judul: judulBuku,
-			Gambar: gambarBuku,
-			Stok: stokBuku,
+			Tahun:   tahunTerbit,
+			Judul:   judulBuku,
+			Gambar:  gambarBuku,
+			Stok:    stokBuku,
 		})
 
 		var pilihanMenu = 0
@@ -118,7 +116,7 @@ func TambahBuku() {
 	fmt.Println("Buku Berhasil Ditambah!")
 }
 
-func simpanBuku(ch <-chan model.Book, wg *sync.WaitGroup)  {
+func simpanBuku(ch <-chan model.Book, wg *sync.WaitGroup) {
 	for buku := range ch {
 		err := buku.Create(config.Mysql.DB)
 		if err != nil {
@@ -127,4 +125,31 @@ func simpanBuku(ch <-chan model.Book, wg *sync.WaitGroup)  {
 	}
 
 	wg.Done()
+}
+
+func LihatBuku() {
+	listBuku := model.Book{}
+
+	fmt.Println("===========================================")
+	fmt.Println("Lihat Buku")
+	fmt.Println("===========================================")
+	fmt.Println("Memuat data ...")
+
+	res, err := listBuku.GetAll(config.Mysql.DB)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	for urutan, buku := range res {
+		fmt.Printf("%d. Kode Buku : %d, ISBN : %s, Penulis Buku : %s, Tahun Terbit : %d, Judul Buku : %s, Gambar Buku : %s, Stok Buku : %d \n",
+			urutan+1,
+			buku.ID,
+			buku.ISBN,
+			buku.Penulis,
+			buku.Tahun,
+			buku.Judul,
+			buku.Gambar,
+			buku.Stok,
+		)
+	}
 }

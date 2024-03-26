@@ -43,6 +43,8 @@ func main() {
 	switch pilihanMenu {
 	case 1:
 		controllers.TambahBuku()
+	case 2:
+		controllers.LihatBuku()
 	case 6:
 		os.Exit(0)
 	}
