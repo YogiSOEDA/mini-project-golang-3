@@ -8,6 +8,9 @@ import (
 	"sekolahbeta/miniproject3/model"
 	"strings"
 	"sync"
+	"time"
+
+	"github.com/go-pdf/fpdf"
 )
 
 func TambahBuku() {
@@ -268,4 +271,67 @@ func EditBuku() {
 	}
 
 	fmt.Println("Data Buku Berhasil Diubah!")
+}
+
+func PrintPdfBuku() {
+	listBuku := model.Book{}
+
+	var pilihanMenu int
+
+	fmt.Println("===========================================")
+	fmt.Println("Print Buku")
+	fmt.Println("===========================================")
+	LihatBuku()
+	fmt.Println("===========================================")
+	fmt.Println("Silahkan Pilih :")
+	fmt.Println("1. Print Salah Satu Buku")
+	fmt.Println("2. Print Semua Buku")
+	fmt.Println("===========================================")
+
+	fmt.Print("Masukkan Pilihan : ")
+	_, err := fmt.Scanln(&pilihanMenu)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	_ = os.Mkdir("pdf", 0777)
+
+	pdf := fpdf.New("P", "mm", "A4", "")
+	pdf.AddPage()
+	pdf.SetFont("Arial", "", 12)
+	pdf.SetLeftMargin(10)
+	pdf.SetRightMargin(10)
+
+	switch pilihanMenu {
+	case 2:
+		res, err := listBuku.GetAll(config.Mysql.DB)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		for i, buku := range res {
+			bukuText := fmt.Sprintf(
+				"Buku #%d:\nKode Buku : %d\nISBN : %s\nPenulis Buku : %s\nTahun Terbit : %d\nJudul Buku : %s\nGambar Buku : %s\nStok Buku : %d\n",
+				// "Buku #%d:\nKode Buku : %s\nJudul Buku : %s\nPengarang : %s\nPenerbit : %s\nJumlah Halaman : %d\nTahunTerbit : %d\n",
+				i+1,
+				buku.ID,
+				buku.ISBN,
+				buku.Penulis,
+				buku.Tahun,
+				buku.Judul,
+				buku.Gambar,
+				buku.Stok,
+			)
+
+			pdf.MultiCell(0, 10, bukuText, "0", "L", false)
+			pdf.Ln(5)
+		}
+
+		err = pdf.OutputFileAndClose(
+			fmt.Sprintf("pdf/daftar_buku_%s.pdf", time.Now().Format("2006-01-02-15-04-05")))
+
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
 }

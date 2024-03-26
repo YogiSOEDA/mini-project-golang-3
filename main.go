@@ -49,6 +49,8 @@ func main() {
 		controllers.HapusBuku()
 	case 4:
 		controllers.EditBuku()
+	case 5:
+		controllers.PrintPdfBuku()
 	case 6:
 		os.Exit(0)
 	}
