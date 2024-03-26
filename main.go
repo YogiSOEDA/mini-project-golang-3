@@ -45,6 +45,8 @@ func main() {
 		controllers.TambahBuku()
 	case 2:
 		controllers.LihatBuku()
+	case 3:
+		controllers.HapusBuku()
 	case 6:
 		os.Exit(0)
 	}

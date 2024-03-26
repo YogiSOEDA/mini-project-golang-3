@@ -153,3 +153,31 @@ func LihatBuku() {
 		)
 	}
 }
+
+func HapusBuku() {
+	var kodeBuku uint
+
+	fmt.Println("===========================================")
+	fmt.Println("Hapus Buku")
+	fmt.Println("===========================================")
+	LihatBuku()
+	fmt.Println("===========================================")
+
+	fmt.Print("Masukkan Kode Buku : ")
+	_, err := fmt.Scanln(&kodeBuku)
+	if err != nil {
+		fmt.Println("Terjadi Error : ", err)
+		return
+	}
+
+	buku := model.Book{
+		ID: kodeBuku,
+	}
+
+	err = buku.DeleteByID(config.Mysql.DB)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("Buku Berhasil Dihapus!")
+}
